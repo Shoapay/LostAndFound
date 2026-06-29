@@ -16,7 +16,7 @@
 - Node.js
 - Express
 - TypeScript
-- MySQL
+- SQLite (via better-sqlite3)
 - JWT 认证
 - Multer (文件上传)
 
@@ -78,15 +78,12 @@ lostfound/
 ## 安装与运行
 
 ### 前置要求
-- Node.js 16+
-- MySQL 8.0+
+- Node.js 16+（也可使用 setup.ps1 自动安装）
 
 ### 1. 数据库配置
 
-创建 MySQL 数据库：
-```sql
-CREATE DATABASE lostfound_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+本项目使用 SQLite 作为数据库，无需额外安装数据库服务。
+数据库文件 `backend/data/lostfound.db` 会在首次启动后端时自动创建。
 
 ### 2. 后端配置
 
@@ -97,16 +94,12 @@ cd backend
 npm install
 
 # 配置环境变量
-# 编辑 .env 文件，设置数据库连接信息和 JWT 密钥
+# 编辑 .env 文件，设置 JWT 密钥
 ```
 
 修改 `backend/.env` 文件：
 ```env
 PORT=3000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=lostfound_db
 JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=7d
 ```
