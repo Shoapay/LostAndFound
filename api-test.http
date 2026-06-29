@@ -1,0 +1,138 @@
+# API 测试集合
+
+## 用户认证
+
+### 1. 用户注册
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "username": "测试用户",
+  "email": "test@example.com",
+  "password": "123456",
+  "phone": "13800138000"
+}
+
+### 2. 用户登录
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123456"
+}
+
+### 3. 获取用户信息
+GET http://localhost:3000/api/users/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 4. 更新用户信息
+PUT http://localhost:3000/api/users/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "username": "新用户名",
+  "phone": "13900139000"
+}
+
+## 失物管理
+
+### 5. 获取失物列表
+GET http://localhost:3000/api/items?status=pending&page=1&limit=10
+
+### 6. 获取失物详情
+GET http://localhost:3000/api/items/1
+
+### 7. 发布失物
+POST http://localhost:3000/api/items
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="title"
+
+测试物品
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+这是一个测试物品描述
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category"
+
+电子产品
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="location"
+
+图书馆
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 8. 获取我的发布
+GET http://localhost:3000/api/items/my
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 9. 更新失物
+PUT http://localhost:3000/api/items/1
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "title": "更新后的标题",
+  "description": "更新后的描述",
+  "category": "书籍文具",
+  "location": "教室"
+}
+
+### 10. 删除失物
+DELETE http://localhost:3000/api/items/1
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 11. 取消招领
+POST http://localhost:3000/api/items/1/cancel
+Authorization: Bearer YOUR_TOKEN_HERE
+
+## 招领管理
+
+### 12. 申请招领
+POST http://localhost:3000/api/claims/1
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "claimMessage": "这是我的物品，特征是..."
+}
+
+### 13. 获取招领申请列表
+GET http://localhost:3000/api/claims?status=pending
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 14. 获取我的申请
+GET http://localhost:3000/api/claims/my
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 15. 通过招领申请
+POST http://localhost:3000/api/claims/1/approve
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 16. 拒绝招领申请
+POST http://localhost:3000/api/claims/1/reject
+Authorization: Bearer YOUR_TOKEN_HERE
+
+## 统计数据
+
+### 17. 获取统计数据
+GET http://localhost:3000/api/statistics
+
+## 通知管理
+
+### 18. 获取通知列表
+GET http://localhost:3000/api/notifications
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 19. 标记通知为已读
+POST http://localhost:3000/api/notifications/1/read
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 20. 全部标记为已读
+POST http://localhost:3000/api/notifications/read-all
+Authorization: Bearer YOUR_TOKEN_HERE
