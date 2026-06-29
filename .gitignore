@@ -31,3 +31,6 @@ Thumbs.db
 # 临时文件
 *.tmp
 *.temp
+
+# Node.js local download (setup.ps1)
+nodejs/
