@@ -189,6 +189,168 @@ npm run preview # 预览生产版本
 3. JWT Token 有效期为 7 天
 4. 建议在生产环境中修改默认的 JWT 密钥
 
+
+
+## 快速启动（PowerShell）
+
+```powershell
+# 安装依赖
+cd backend; npm install; cd ..
+cd frontend; npm install; cd ..
+
+# 启动后端（新窗口）
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; npm run dev"
+
+# 启动前端（新窗口）
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd frontend; npm run dev"
+```
+
+## 项目架构
+
+### 后端架构
+```
+backend/
+├── src/
+│   ├── controllers/      # 业务逻辑控制器
+│   ├── routes/           # 路由定义
+│   ├── middleware/        # 中间件（认证、错误处理）
+│   ├── config/           # 配置文件（数据库连接、初始化）
+│   ├── utils/            # 工具函数（密码加密、JWT）
+│   ├── types/            # TypeScript 类型定义
+│   └── app.ts            # 应用入口
+├── .env                  # 环境变量配置
+├── package.json
+└── tsconfig.json
+```
+
+### 前端架构
+```
+frontend/
+├── src/
+│   ├── components/       # 可复用组件
+│   ├── pages/            # 页面组件
+│   ├── services/         # API 服务封装
+│   ├── types/            # TypeScript 类型定义
+│   ├── App.tsx           # 主应用组件
+│   ├── main.tsx          # 应用入口
+│   └── index.css         # 全局样式
+├── index.html
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
+
+## 数据库设计
+
+### 用户表（users）
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | INTEGER | 主键，自增 |
+| username | TEXT | 用户名，唯一 |
+| email | TEXT | 邮箱，唯一 |
+| password | TEXT | 加密密码 |
+| phone | TEXT | 手机号 |
+| created_at | DATETIME | 创建时间 |
+
+### 失物表（items）
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | INTEGER | 主键，自增 |
+| user_id | INTEGER | 发布者 ID |
+| title | TEXT | 物品名称 |
+| description | TEXT | 描述 |
+| category | TEXT | 分类 |
+| location | TEXT | 地点 |
+| image_url | TEXT | 图片 URL |
+| status | TEXT | 状态（pending/claimed/cancelled） |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 更新时间 |
+
+### 招领记录表（claims）
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | INTEGER | 主键，自增 |
+| item_id | INTEGER | 物品 ID |
+| claimer_id | INTEGER | 申请人 ID |
+| status | TEXT | 状态（pending/approved/rejected） |
+| claim_message | TEXT | 申请说明 |
+| created_at | DATETIME | 创建时间 |
+
+### 通知表（notifications）
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | INTEGER | 主键，自增 |
+| user_id | INTEGER | 用户 ID |
+| title | TEXT | 标题 |
+| message | TEXT | 消息内容 |
+| type | TEXT | 类型（claim/approve/reject/system） |
+| is_read | INTEGER | 是否已读（0/1） |
+| created_at | DATETIME | 创建时间 |
+
+## 核心业务流程
+
+```
+用户注册/登录 -> JWT 认证
+    |
+    v
+发布失物（填写信息 + 上传图片）
+    |
+    v
+其他用户浏览 -> 申请招领
+    |
+    v
+发布者审核申请 -> 通过 / 拒绝
+    |
+    +--> 通过 -> 物品标记为已招领 -> 通知申请人
+    |
+    +--> 拒绝 -> 物品继续保持待招领状态
+```
+
+## 常见问题
+
+### Q: PowerShell 中 && 不起作用？
+A: PowerShell 使用分号 ; 作为命令分隔符，而不是 &&
+
+### Q: 端口被占用？
+A: 修改 backend/.env 中的 PORT 和 frontend/vite.config.ts 中的端口配置
+
+### Q: 数据库连接失败？
+A: 本项目使用 SQLite，数据库文件 backend/data/lostfound.db 会在首次启动时自动创建，无需手动配置数据库
+
+## 开发建议
+
+### 后端
+- 使用 TypeScript 类型检查
+- 统一错误处理
+- 使用事务处理复杂业务
+- 遵循 RESTful API 设计规范
+
+### 前端
+- 组件化开发
+- 响应式设计
+- 良好的用户体验
+
+### 安全
+- 密码加密存储
+- JWT Token 认证
+- 输入验证
+- 文件上传安全检查
+
+## 部署建议
+
+### 后端部署
+- 使用 PM2 进程管理
+- Nginx 反向代理
+- HTTPS 证书
+
+### 前端部署
+- 构建生产版本：cd frontend && npm run build
+- Nginx 静态文件服务
+- Gzip 压缩
+
+### 数据库
+- 定期备份 backend/data/lostfound.db 文件
+
 ## 许可证
 
 MIT License
